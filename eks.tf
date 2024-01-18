@@ -25,7 +25,7 @@ resource "aws_eks_node_group" "spot" {
 
   instance_types = ["m5.large"]
   capacity_type  = "SPOT"
-  node_role_arn  = ["data.external.eks_node_group.result"]
+  node_role_arn  = data.external.eks_node_group.result
 
   remote_access {
     ec2_ssh_key = "chandra"
