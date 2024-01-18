@@ -3,7 +3,7 @@ resource "aws_eks_cluster" "eks_spot_cluster" {
   role_arn = "arn:aws:iam:::role/eks-spot-cluster"
 
   vpc_config {
-    subnet_ids = "subnet-0eff86e19581e95ec"
+    subnet_ids = ["subnet-0eff86e19581e95ec"] 
   }
 }
 
