@@ -1,10 +1,16 @@
 resource "aws_eks_cluster" "eks_spot_cluster" {
   name     = "eks-spot-cluster"
-  role_arn = "arn:aws:iam:::role/eks-spot-cluster"
+  role_arn = "arn:aws:iam::767398108107:role/eks-spot-cluster"
 
   vpc_config {
-    subnet_ids = ["subnet-0eff86e19581e95ec"] 
+    subnet_ids = ["subnet-0eff86e19581e95ec"]
   }
+}
+
+data "external" "eks_node_group" {
+  program = ["sh", "-c", "eksctl get nodegroup --cluster=${aws_eks_cluster.eks_spot_cluster.name} -o json | jq -r '.[].NodeGroupArn'"]
+
+  depends_on = [aws_eks_cluster.eks_spot_cluster]
 }
 
 resource "aws_eks_node_group" "spot" {
@@ -19,7 +25,7 @@ resource "aws_eks_node_group" "spot" {
 
   instance_types = ["m5.large"]
   capacity_type  = "SPOT"
-  node_role_arn  = aws_eks_cluster.eks_spot_cluster.node_group_default_node_group.0.node_group_arn
+  node_role_arn  = data.external.eks_node_group.result
 
   remote_access {
     ec2_ssh_key = "chandra"
