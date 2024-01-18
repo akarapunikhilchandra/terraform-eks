@@ -11,10 +11,10 @@ resource "aws_eks_node_group" "spot" {
   cluster_name    = aws_eks_cluster.eks_spot_cluster.name
   node_group_name = "spot"
 
-  node_group_status = "ACTIVE"
-
   scaling_config {
     desired_size = 3
+    max_size     = 3
+    min_size     = 3
   }
 
   instance_types = ["m5.large"]
@@ -25,4 +25,6 @@ resource "aws_eks_node_group" "spot" {
   }
 
   subnet_ids = ["subnet-0eff86e19581e95ec"]
+
+  depends_on = [aws_eks_cluster.eks_spot_cluster]
 }
