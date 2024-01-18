@@ -1,22 +1,28 @@
-# provider "aws" {
-#   region = "us-west-2" # Change this to your desired AWS region
-# }
+resource "aws_eks_cluster" "eks_spot_cluster" {
+  name     = "eks-spot-cluster"
+  role_arn = "arn:aws:iam::ACCOUNT_ID:role/eks-spot-cluster"
 
-module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = "eks-spot-cluster"
-  subnets         = "subnet-0eff86e19581e95ec"
-  vpc_id          = "vpc-021a2ac87501570e4" # Replace with your VPC ID
-  cluster_version = "1.27"
-
-  node_groups = {
-    eks_nodes_spot = {
-      desired_capacity = 2
-      max_capacity     = 3
-      min_capacity     = 1
-      key_name         = "chandra" # Replace with your EC2 key pair name
-      instance_type    = "m5.large"     # Replace with your desired instance type
-      spot_price       = "0.0835"        # Replace with your desired spot price
-    }
+  vpc_config {
+    subnet_ids = ["subnet-0eff86e19581e95ec"]
   }
+}
+
+resource "aws_eks_node_group" "spot" {
+  cluster_name    = aws_eks_cluster.eks_spot_cluster.name
+  node_group_name = "spot"
+
+  node_group_status = "ACTIVE"
+
+  scaling_config {
+    desired_size = 3
+  }
+
+  instance_types = ["m5.large"]
+  capacity_type  = "SPOT"
+
+  remote_access {
+    ec2_ssh_key = "chandra"
+  }
+
+  subnet_ids = ["subnet-0eff86e19581e95ec"]
 }
