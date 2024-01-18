@@ -19,7 +19,6 @@ resource "aws_eks_node_group" "spot" {
 
   instance_types = ["m5.large"]
   capacity_type  = "SPOT"
-  node_role_arn  = aws_eks_cluster.eks_spot_cluster.node_group_default_node_group.0.node_group_arn
 
   remote_access {
     ec2_ssh_key = "chandra"
