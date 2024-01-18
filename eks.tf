@@ -1,6 +1,6 @@
 resource "aws_eks_cluster" "eks_spot_cluster" {
   name     = "eks-spot-cluster"
-  role_arn = "arn:aws:iam::ACCOUNT_ID:role/eks-spot-cluster"
+  role_arn = "arn:aws:iam::767398108107:role/eks-spot-cluster"
 
   vpc_config {
     subnet_ids = ["subnet-0eff86e19581e95ec"]
